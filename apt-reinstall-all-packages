@@ -32,35 +32,6 @@ init(){
 refresh_apt_local_cache(){
     print_progress \
         'Refreshing APT local cache when necessary...'
-    local -a required_commands=(
-        # For fetching the metadata
-        apt-get
-
-        # For determining the current time
-        date
-
-        # For determining the APT local cache creation time
-        stat
-    )
-    local required_command_check_failed=false
-    for command in "${required_commands[@]}"; do
-        if ! command -v "${command}" >/dev/null; then
-            printf \
-                '%s: Error: This function requires the "%s" command to be available in your command search PATHs.\n' \
-                "${FUNCNAME[0]}" \
-                "${command}" \
-                1>&2
-            required_command_check_failed=true
-        fi
-    done
-    if test "${required_command_check_failed}" == true; then
-        printf \
-            '%s: Error: Required command check failed.\n' \
-            "${FUNCNAME[0]}" \
-            1>&2
-        return 1
-    fi
-
     local apt_archive_cache_mtime_epoch
     if ! apt_archive_cache_mtime_epoch="$(
         stat \
@@ -209,12 +180,53 @@ check_running_user(){
     fi
 }
 
+# Check whether all the required commands are available in the command
+# search PATHs
+check_required_commands(){
+    printf \
+        'Info: Checking required commands...\n'
+    local -a required_commands=(
+        # For fetching the APT software archive metadata
+        apt-get
+
+        # For determining the current time, used in refresh_apt_local_cache
+        date
+
+        # For determining the APT local cache creation time, used in
+        # refresh_apt_local_cache
+        stat
+    )
+    local flag_required_command_check_failed=false
+    for command in "${required_commands[@]}"; do
+        if ! command -v "${command}" >/dev/null; then
+            flag_required_command_check_failed=true
+            printf \
+                'Error: This program requires the "%s" command to be available in your command search PATHs.\n' \
+                "${command}" \
+                1>&2
+        fi
+    done
+    if test "${flag_required_command_check_failed}" == true; then
+        printf \
+            'Error: Required command check failed, please check your installation.\n' \
+            1>&2
+        return 2
+    fi
+}
+
 check_runtime_parameters(){
     print_progress 'Checking the runtime parameters of this program...'
 
     if ! check_running_user; then
         printf \
             'Error: Running user check failed.\n' \
+            1>&2
+        return 2
+    fi
+
+    if ! check_required_commands; then
+        printf \
+            'Error: Required command check has failed.\n' \
             1>&2
         return 2
     fi
