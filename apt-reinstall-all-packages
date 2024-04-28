@@ -16,8 +16,86 @@ init(){
         exit 1
     fi
 
+    if ! refresh_apt_local_cache; then
+        printf \
+            "Error: Unable to refresh the APT software management system's local cache.\\n" \
+            1>&2
+        return 2
+    fi
+
     print_progress \
         'Operation completed without errors.'
+}
+
+# Generate or refresh the APT software management system's local cache
+# when necessary
+refresh_apt_local_cache(){
+    print_progress \
+        'Refreshing APT local cache when necessary...'
+    local -a required_commands=(
+        # For fetching the metadata
+        apt-get
+
+        # For determining the current time
+        date
+
+        # For determining the APT local cache creation time
+        stat
+    )
+    local required_command_check_failed=false
+    for command in "${required_commands[@]}"; do
+        if ! command -v "${command}" >/dev/null; then
+            printf \
+                '%s: Error: This function requires the "%s" command to be available in your command search PATHs.\n' \
+                "${FUNCNAME[0]}" \
+                "${command}" \
+                1>&2
+            required_command_check_failed=true
+        fi
+    done
+    if test "${required_command_check_failed}" == true; then
+        printf \
+            '%s: Error: Required command check failed.\n' \
+            "${FUNCNAME[0]}" \
+            1>&2
+        return 1
+    fi
+
+    local apt_archive_cache_mtime_epoch
+    if ! apt_archive_cache_mtime_epoch="$(
+        stat \
+            --format=%Y \
+            /var/cache/apt/archives
+        )"; then
+        printf \
+            'Error: Unable to query the modification time of the APT software sources cache directory.\n' \
+            1>&2
+        return 2
+    fi
+
+    local current_time_epoch
+    if ! current_time_epoch="$(
+        date +%s
+        )"; then
+        printf \
+            'Error: Unable to query the current time.\n' \
+            1>&2
+        return 2
+    fi
+
+    if test "$((current_time_epoch - apt_archive_cache_mtime_epoch))" -lt 86400; then
+        printf \
+            'Info: The last refresh time is less than 1 day, skipping...\n'
+    else
+        printf \
+            'Info: Refreshing the APT local package cache...\n'
+        if ! apt-get update; then
+            printf \
+                'Error: Unable to refresh the APT local package cache.\n' \
+                1>&2
+            return 2
+        fi
+    fi
 }
 
 # print progress report message with additional styling
