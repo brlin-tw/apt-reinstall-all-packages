@@ -164,6 +164,9 @@ init(){
         local -a apt_get_opts=(
             # Specify the package should be re-installed
             --reinstall
+
+            # Answer yes to prompts
+            --assume-yes
         )
         if ! apt-get install "${apt_get_opts[@]}" "${package}"; then
             printf \
