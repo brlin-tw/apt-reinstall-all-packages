@@ -3,6 +3,19 @@
 #
 # Copyright 2024 林博仁(Buo-ren, Lin) <buo.ren.lin+legal@gmail.com>
 # SPDX-License-Identifier: CC-BY-SA-4.0+
+EXCLUDED_PACKAGE_NAME_REGEXES=(
+    # Fonts
+    '^fonts-.*$'
+
+    # Linux kernel packages
+    '^linux-.*$'
+
+    # Documentation packages
+    '-doc$'
+
+    # Development packages
+    '-dev$'
+)
 
 init(){
     if ! command -v date >/dev/null; then
@@ -158,6 +171,15 @@ init(){
         'Re-installing all installed packages...'
     local -a failed_packages=()
     for package in "${installed_pkgs[@]}"; do
+        for regex in "${EXCLUDED_PACKAGE_NAME_REGEXES[@]}"; do
+            if [[ "${package}" =~ ${regex} ]]; then
+                printf \
+                    'Info: Skipping excluded package "%s"...\n' \
+                    "${package}"
+                continue 2
+            fi
+        done
+
         printf \
             'Info: Re-installing the "%s" package...\n' \
             "${package}"
