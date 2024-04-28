@@ -110,6 +110,43 @@ init(){
         'Info: Found %u installed packages.\n' \
         "${installed_pkgs_count}"
 
+    print_progress \
+        'Saving the automatically installed packages list...'
+    printf \
+        'Info: Saving the automatically installed packages list to a backup file...\n'
+    local automatically_installed_packages_backup_file="${script_dir}/${script_name}-${operation_timestamp}.auto-installed-pkgs.txt"
+
+    if ! apt-mark showauto \
+        >"${automatically_installed_packages_backup_file}"; then
+        printf \
+            'Error: Unable to save the automatically installed packages list to a backup file.\n' \
+            1>&2
+        exit 2
+    fi
+    printf \
+        'Info: Automatically installed packages list backed up to the "%s" file.\n' \
+        "${automatically_installed_packages_backup_file}"
+
+    local automatically_installed_packages_quantity_raw
+    local -a wc_opts=(
+        # Print the line count
+        --lines
+    )
+    if ! automatically_installed_packages_quantity_raw="$(
+        wc "${wc_opts[@]}" "${automatically_installed_packages_backup_file}"
+        )"; then
+        printf \
+            'Error: Unable to determining the quantity of the automatically installed packages.\n' \
+            1>&2
+        exit 2
+    fi
+    local automatically_installed_packages_quantity
+    automatically_installed_packages_quantity="${automatically_installed_packages_quantity_raw%% *}"
+
+    printf \
+        'Info: Found %u automatically installed packages.\n' \
+        "${automatically_installed_packages_quantity}"
+
     if ! refresh_apt_local_cache; then
         printf \
             "Error: Unable to refresh the APT software management system's local cache.\\n" \
@@ -282,6 +319,9 @@ check_required_commands(){
     local -a required_commands=(
         # For fetching the APT software archive metadata
         apt-get
+
+        # For querying the automatically installed packages list
+        apt-mark
 
         # For filtering the packages that are in the installed state
         awk
