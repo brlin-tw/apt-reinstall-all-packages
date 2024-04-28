@@ -155,7 +155,76 @@ init(){
     fi
 
     print_progress \
-        'Operation completed without errors.'
+        'Re-installing all installed packages...'
+    local -a failed_packages=()
+    for package in "${installed_pkgs[@]}"; do
+        printf \
+            'Info: Re-installing the "%s" package...\n' \
+            "${package}"
+        local -a apt_get_opts=(
+            # Specify the package should be re-installed
+            --reinstall
+        )
+        if ! apt-get install "${apt_get_opts[@]}" "${package}"; then
+            printf \
+                'Warning: Unable to re-install the "%s" package.\n' \
+                "${package}" \
+                1>&2
+            failed_packages+=("${package}")
+        fi
+
+        # If the package is previously set to be automatically
+        # installed, mark it back to be so
+        local -a grep_opts=(
+            # Use extended reguar expression instead of BRE
+            --extended-regexp
+
+            # Do not write anything to the standard output and
+            # only use exit status to indicate whether the pattern
+            # is matched
+            --quiet
+        )
+        local regex_package_name
+        regex_package_name="^$(convert_dpkg_name_to_regex "${package}")\$"
+        if grep "${grep_opts[@]}" "${regex_package_name}" \
+            "${automatically_installed_packages_backup_file}"; then
+            printf \
+                'Info: The "%s" package is previously automatically installed, restoring the state...\n' \
+                "${package}"
+            if ! apt-mark auto "${package}"; then
+                printf \
+                    'Error: Unable to mark "%s" package as automatically installed.\n' \
+                    "${package}" \
+                    1>&2
+                exit 2
+            fi
+        fi
+    done
+
+    if test "${#failed_packages[@]}" -gt 0; then
+        print_progress \
+            'Operation completed with the following packages failed to re-install, please check:'
+        for package in "${failed_packages[@]}"; do
+            printf \
+                '* %s\n' \
+                "${package}"
+        done
+    else
+        print_progress \
+            'Operation completed without errors.'
+    fi
+}
+
+# Convert a Debian package name to a valid regular expression
+# pattern
+convert_dpkg_name_to_regex(){
+    local package_name="${1}"; shift
+
+    local result="${package_name}"
+    result="${result//./\\.}"
+    result="${result//+/\\+}"
+
+    printf '%s' "${result}"
 }
 
 # Generate or refresh the APT software management system's local cache
@@ -317,7 +386,8 @@ check_required_commands(){
     printf \
         'Info: Checking required commands...\n'
     local -a required_commands=(
-        # For fetching the APT software archive metadata
+        # For fetching the APT software archive metadata and
+        # package re-installation
         apt-get
 
         # For querying the automatically installed packages list

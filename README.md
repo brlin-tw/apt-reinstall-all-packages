@@ -5,6 +5,10 @@ Re-install all packages on an APT-managed system, without changing (much) state.
 <https://gitlab.com/brlin/apt-reinstall-all-packages>  
 [![The GitLab CI pipeline status badge of the project's `main` branch](https://gitlab.com/brlin/apt-reinstall-all-packages/badges/main/pipeline.svg?ignore_skipped=true "Click here to check out the comprehensive status of the GitLab CI pipelines")](https://gitlab.com/brlin/apt-reinstall-all-packages/-/pipelines) [![GitHub Actions workflow status badge](https://github.com/brlin-tw/apt-reinstall-all-packages/actions/workflows/check-potential-problems.yml/badge.svg "GitHub Actions workflow status")](https://github.com/brlin-tw/apt-reinstall-all-packages/actions/workflows/check-potential-problems.yml) [![pre-commit enabled badge](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white "This project uses pre-commit to check potential problems")](https://pre-commit.com/) [![REUSE Specification compliance badge](https://api.reuse.software/badge/gitlab.com/brlin/apt-reinstall-all-packages "This project complies to the REUSE specification to decrease software licensing costs")](https://api.reuse.software/info/gitlab.com/brlin/apt-reinstall-all-packages)
 
+## Note
+
+* This utility will always install the latest version available in the software archive, it WILL NOT preserve the original version installed in the system.
+
 ## Reference
 
 The following self/third-party materials are referenced during the development of this project:
@@ -21,6 +25,8 @@ The following self/third-party materials are referenced during the development o
   Explains how to log script output from with-in the shell script.
 * apt-mark(8)  
   For querying the automatically/manually installed status of a installed package.
+* [`Source` — List of fields — Control files and their fields — Debian Policy Manual](https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-source)  
+  Explains the character set that composes a Debian source(and binary) package names.
 
 ## Licensing
 
