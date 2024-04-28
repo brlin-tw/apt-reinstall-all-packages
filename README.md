@@ -17,6 +17,8 @@ The following self/third-party materials are referenced during the development o
   For information about the dpkg package states.
 * dpkg-query(1)  
   For querying all the installed packages in the system.
+* [bash - Redirect all subsequent commands' stderr using exec - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/61931/redirect-all-subsequent-commands-stderr-using-exec)  
+  Explains how to log script output from with-in the shell script.
 
 ## Licensing
 

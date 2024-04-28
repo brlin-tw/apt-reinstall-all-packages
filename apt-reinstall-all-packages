@@ -5,6 +5,35 @@
 # SPDX-License-Identifier: CC-BY-SA-4.0+
 
 init(){
+    if ! command -v date >/dev/null; then
+        printf \
+            'Error: This program requires the "date" utility to be available in your command search PATHs.\n' \
+            1>&2
+        exit 1
+    fi
+    printf \
+        'Info: Determining the operation timestamp...\n'
+    local operation_timestamp
+    if ! operation_timestamp="$(
+        date +%Y%m%d-%H%M%S
+        )"; then
+        printf \
+            'Error: Unable to determine the operation timestamp.\n' \
+            1>&2
+        exit 2
+    fi
+
+    local log_file="${script_dir}/${script_name}-${operation_timestamp}.log"
+    printf \
+        'Info: Writing program log to "%s"...\n' \
+        "${log_file}"
+    if ! exec > >(tee "${log_file}") 2>&1; then
+        printf \
+            'Error: Unable to configure logging.\n' \
+            1>&2
+        exit 2
+    fi
+
     print_progress \
         'The apt-reinstall-all-packages utility' \
         =
