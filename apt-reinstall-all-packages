@@ -16,6 +16,8 @@ init(){
         exit 1
     fi
 
+    print_progress \
+        'Querying all the installed packages...'
     local dpkg_query_list_raw
     local -a dpkg_query_envs=(
         # Disable localization which will break our filtering logic
