@@ -13,6 +13,10 @@ The following self/third-party materials are referenced during the development o
   Previous implementation.
 * [Reinstalling all Debian packages - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/79125/reinstalling-all-debian-packages)  
   Existing solutions to the same problem.
+* dpkg(1)  
+  For information about the dpkg package states.
+* dpkg-query(1)  
+  For querying all the installed packages in the system.
 
 ## Licensing
 

@@ -16,6 +16,69 @@ init(){
         exit 1
     fi
 
+    local dpkg_query_list_raw
+    local -a dpkg_query_envs=(
+        # Disable localization which will break our filtering logic
+        LANG=C
+    )
+    # The parameter expansion-like syntax is owned by dpkg-query
+    # shellcheck disable=SC2016
+    local -a dpkg_query_opts=(
+        # List packages using the specified --showformat
+        --show
+        --showformat='${Package} ${Status}\n'
+    )
+    if ! dpkg_query_list_raw="$(
+        env "${dpkg_query_envs[@]}" \
+            dpkg-query "${dpkg_query_opts[@]}"
+        )"; then
+        printf \
+            'Error: Unable to query the list of the Debian packages and their statuses in the dpkg database.\n' \
+            1>&2
+        exit 2
+    fi
+
+    local dpkg_installed_raw
+    local -a grep_opts=(
+        # Use extended reguar expression instead of BRE
+        --extended-regexp
+    )
+    if ! dpkg_installed_raw="$(
+        grep "${grep_opts[@]}" 'installed$' <<<"${dpkg_query_list_raw}"
+        )"; then
+        printf \
+            'Error: Unable to filter out the list of the Debian packages that are in the "installed" package state.\n' \
+            1>&2
+        exit 2
+    fi
+
+    local installed_pkgs_raw
+    if ! installed_pkgs_raw="$(
+        awk '{print $1}' <<<"${dpkg_installed_raw}"
+        )"; then
+        printf \
+            'Error: Unable to parse out the package name from the dpkg-query query result.\n' \
+            1>&2
+        exit 2
+    fi
+
+    local -a installed_pkgs=()
+    local -a mapfile_opts=(
+        # Strip line endings from array members
+        -t
+    )
+    if ! mapfile "${mapfile_opts[@]}" installed_pkgs <<<"${installed_pkgs_raw}"; then
+        printf \
+            'Error: Unable to populate the installed_pkgs array.\n' \
+            1>&2
+        exit 2
+    fi
+
+    local installed_pkgs_count="${#installed_pkgs[@]}"
+    printf \
+        'Info: Found %u installed packages.\n' \
+        "${installed_pkgs_count}"
+
     if ! refresh_apt_local_cache; then
         printf \
             "Error: Unable to refresh the APT software management system's local cache.\\n" \
@@ -189,8 +252,19 @@ check_required_commands(){
         # For fetching the APT software archive metadata
         apt-get
 
+        # For filtering the packages that are in the installed state
+        awk
+        grep
+
         # For determining the current time, used in refresh_apt_local_cache
         date
+
+        # For querying the installed packages list
+        dpkg-query
+
+        # For setting environment variable for specific command
+        # calls
+        env
 
         # For determining the APT local cache creation time, used in
         # refresh_apt_local_cache
