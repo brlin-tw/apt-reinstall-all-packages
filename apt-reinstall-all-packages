@@ -16,6 +16,7 @@ EXCLUDED_PACKAGE_NAME_REGEXES=(
     # Development packages
     '-dev$'
 )
+START_FROM_PACKAGE="${START_FROM_PACKAGE:-}"
 
 init(){
     if ! command -v date >/dev/null; then
@@ -170,7 +171,17 @@ init(){
     print_progress \
         'Re-installing all installed packages...'
     local -a failed_packages=()
+    local flag_start_from_package_matched=false
     for package in "${installed_pkgs[@]}"; do
+        if test -n "${START_FROM_PACKAGE}" \
+            && test "${flag_start_from_package_matched}" == false; then
+            if test "${package}" == "${START_FROM_PACKAGE}"; then
+                flag_start_from_package_matched=true
+            else
+                continue
+            fi
+        fi
+
         for regex in "${EXCLUDED_PACKAGE_NAME_REGEXES[@]}"; do
             if [[ "${package}" =~ ${regex} ]]; then
                 printf \
