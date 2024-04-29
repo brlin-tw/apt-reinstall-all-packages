@@ -25,13 +25,13 @@ The following self/third-party materials are referenced during the development o
   Previous implementation.
 * [Reinstalling all Debian packages - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/79125/reinstalling-all-debian-packages)  
   Existing solutions to the same problem.
-* dpkg(1)  
+* dpkg(1) manual page  
   For information about the dpkg package states.
-* dpkg-query(1)  
+* dpkg-query(1) manual page  
   For querying all the installed packages in the system.
 * [bash - Redirect all subsequent commands' stderr using exec - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/61931/redirect-all-subsequent-commands-stderr-using-exec)  
   Explains how to log script output from with-in the shell script.
-* apt-mark(8)  
+* apt-mark(8) manual page  
   For querying the automatically/manually installed status of a installed package.
 * [`Source` — List of fields — Control files and their fields — Debian Policy Manual](https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-source)  
   Explains the character set that composes a Debian source(and binary) package names.
