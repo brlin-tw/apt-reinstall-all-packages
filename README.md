@@ -17,7 +17,7 @@ The following are the notable features of this product:
 
 * This utility will always install the latest version available in the software archive, it WILL NOT preserve the original version installed in the system.
 
-## Reference
+## References
 
 The following self/third-party materials are referenced during the development of this project:
 
