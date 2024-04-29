@@ -512,6 +512,24 @@ if ! set "${set_opts[@]}"; then
 fi
 
 printf \
+    'Info: Configuring miscellaneous interpreter behaviors...\n'
+shopt_opts=(
+    # Set specified shell option
+    -s
+)
+shell_options=(
+    # Expand array with no members as *nothing* instead of the literal
+    # expansion pattern
+    nullglob
+)
+if ! shopt "${shopt_opts[@]}" "${shell_options[@]}"; then
+    printf \
+        'Error: Unable to configure miscellaneous interpreter behaviors.\n' \
+        1>&2
+    exit 1
+fi
+
+printf \
     'Info: Checking the existence of the required commands...\n'
 required_commands=(
     realpath
