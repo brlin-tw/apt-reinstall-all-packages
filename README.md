@@ -35,6 +35,8 @@ The following self/third-party materials are referenced during the development o
   For querying the automatically/manually installed status of a installed package.
 * [`Source` — List of fields — Control files and their fields — Debian Policy Manual](https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-source)  
   Explains the character set that composes a Debian source(and binary) package names.
+* debconf(7) manual page  
+  Explains how to avoid debconf's prompts to be shown during installation.
 
 ## Licensing
 

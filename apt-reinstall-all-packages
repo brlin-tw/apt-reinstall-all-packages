@@ -198,6 +198,11 @@ init(){
         printf \
             'Info: Re-installing the "%s" package...\n' \
             "${package}"
+        local -a apt_get_envs=(
+            # Don't display Debconf prompts, always choose the default
+            # answer
+            DEBIAN_FRONTEND=noninteractive
+        )
         local -a apt_get_opts=(
             # Specify the package should be re-installed
             --reinstall
@@ -205,7 +210,8 @@ init(){
             # Answer yes to prompts
             --assume-yes
         )
-        if ! apt-get install "${apt_get_opts[@]}" "${package}"; then
+        if ! env "${apt_get_envs[@]}" \
+            apt-get install "${apt_get_opts[@]}" "${package}"; then
             printf \
                 'Warning: Unable to re-install the "%s" package.\n' \
                 "${package}" \
