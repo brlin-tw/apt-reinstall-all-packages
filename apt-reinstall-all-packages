@@ -5,16 +5,16 @@
 # SPDX-License-Identifier: CC-BY-SA-4.0+
 EXCLUDED_PACKAGE_NAME_REGEXES=(
     # Fonts
-    '^fonts-.*$'
+    #'^fonts-.*$'
 
     # Linux kernel packages
-    '^linux-.*$'
+    #'^linux-.*$'
 
     # Documentation packages
-    '-doc$'
+    #'-doc$'
 
     # Development packages
-    '-dev$'
+    #'-dev$'
 )
 START_FROM_PACKAGE="${START_FROM_PACKAGE:-}"
 
