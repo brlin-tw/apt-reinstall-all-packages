@@ -11,6 +11,7 @@ The following are the notable features of this product:
 
 * Will not affect the "automatically installed" state of the packages, allow unused packages to be automatically removed when not used.
 * Support fast-forwarding to start from user specified package, allowing the user to resume an interrupted process.
+* Support re-installing user-specified subset of packages instead, useful for retrying the re-installation.
 
 ## Note
 
