@@ -13,6 +13,55 @@ The following are the notable features of this product:
 * Support fast-forwarding to start from user specified package, allowing the user to resume an interrupted process.
 * Support re-installing user-specified subset of packages instead, useful for retrying the re-installation.
 
+## Usage
+
+This section documents the usage of this utility:
+
+1. Download the product release archive from [the Releases page](https://gitlab.com/brlin/apt-reinstall-all-packages/-/releases).
+1. Extract the product release archive using your preferred archive manipulation application, or, run the following command in a text terminal application:
+
+    ```bash
+    tar_opts=(
+        # Extract the specified archive
+        --extract
+        --file /path/to/apt-reinstall-all-packages-X.Y.Z.tar.gz
+
+        # Display files that are extracted
+        --verbose
+    )
+    tar "${tar_opts[@]}"
+    ```
+
+1. Launch a text terminal application(if it is not launched already).
+1. Refer [the Environment variables that can customize the utility's behaviors](#environment-variables-that-can-customize-the-utilitys-behaviors) and [the Internal variables that can customize the utility's behaviors](#internal-variables-that-can-customize-the-utilitys-behaviors) section for ways to customize the utility's behaviors.
+1. Run the utility program by running the following command _as root_:
+
+    ```bash
+    /path/to/apt-reinstall-all-packages-X.Y.Z/apt-reinstall-all-packages _subset packages_...
+    ```
+
+   The _subset packages_ program parameters are only needed if you prefer to only re-install these subset packages, if omitted all non-excluded packages are re-installed.
+
+### Environment variables that can customize the utility's behaviors
+
+This section documents the environment variables that can customize the utility's behaviors according to your needs:
+
+#### START_FROM_PACKAGE
+
+Specify the name of the package to start the re-installation from.  This is useful for resuming an interrupted reinstallation session.
+
+**Default value:** (null)
+
+### Internal variables that can customize the utility's behaviors
+
+This section documents the internal variables that can customize the utility's behaviors according to your needs.  You need to edit the utility program using a plaintext editor to change the definition of the variables.
+
+#### EXCLUDED_PACKAGE_NAME_REGEXES
+
+This array variable holds the POSIX extended regular expression patterns to match the name of the packages you don't want to run the re-installation.  This may be useful for packages that don't matter much from being corrupted like documentation, etc.
+
+Refer the existing program comment for some examples.
+
 ## Note
 
 * This utility will always install the latest version available in the software archive, it WILL NOT preserve the original version installed in the system.
