@@ -66,7 +66,7 @@ Refer the existing program comment for some examples.
 
 ## Note
 
-* This utility will always install the latest version available in the software archive, it WILL NOT preserve the original version installed in the system.
+This utility will always install the latest version available in the software archive, it WILL NOT preserve the original version installed in the system.
 
 ## References
 
