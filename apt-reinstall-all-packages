@@ -37,7 +37,7 @@ init(){
         exit 2
     fi
 
-    local log_file="${script_dir}/${script_name}-${operation_timestamp}.log"
+    local log_file="${script_name}-${operation_timestamp}.log"
     printf \
         'Info: Writing program log to "%s"...\n' \
         "${log_file}"
@@ -132,7 +132,7 @@ init(){
         'Saving the automatically installed packages list...'
     printf \
         'Info: Saving the automatically installed packages list to a backup file...\n'
-    local automatically_installed_packages_backup_file="${script_dir}/${script_name}-${operation_timestamp}.auto-installed-pkgs.txt"
+    local automatically_installed_packages_backup_file="${script_name}-${operation_timestamp}.auto-installed-pkgs.txt"
 
     if ! apt-mark showauto \
         >"${automatically_installed_packages_backup_file}"; then
