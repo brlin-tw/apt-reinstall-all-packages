@@ -40,7 +40,7 @@ This section documents the usage of this utility:
     /path/to/apt-reinstall-all-packages-X.Y.Z/apt-reinstall-all-packages _subset packages_...
     ```
 
-   The _subset packages_ program parameters are only needed if you prefer to only re-install these subset packages, if omitted all non-excluded packages are re-installed.
+   The _subset packages_ command-line arguments are only needed if you prefer to only re-install these subset packages, if omitted all non-excluded packages are re-installed.
 
 ### Environment variables that can customize the utility's behaviors
 
