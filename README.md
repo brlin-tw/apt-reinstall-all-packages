@@ -50,7 +50,7 @@ This section documents the environment variables that can customize the utility'
 
 Specify the name of the package to start the re-installation from.  This is useful for resuming an interrupted reinstallation session.
 
-**Default value:** (null)
+**Default value:** (null): Start from the first installed package.
 
 ### Internal variables that can customize the utility's behaviors
 
@@ -59,6 +59,8 @@ This section documents the internal variables that can customize the utility's b
 #### EXCLUDED_PACKAGE_NAME_REGEXES
 
 This array variable holds the POSIX extended regular expression patterns to match the name of the packages you don't want to run the re-installation.  This may be useful for packages that don't matter much from being corrupted like documentation, etc.
+
+**Default value:** (null): None is excluded.
 
 Refer the existing program comment for some examples.
 
